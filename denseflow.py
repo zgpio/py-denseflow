@@ -75,12 +75,12 @@ def dense_flow(augs):
     try:
         videocapture=skvideo.io.vread(video_path)
     except:
-        print '{} read error! '.format(video_name)
+        print('{} read error! '.format(video_name))
         return 0
-    print video_name
+    print(video_name)
     # if extract nothing, exit!
     if videocapture.sum()==0:
-        print 'Could not initialize capturing',video_name
+        print('Could not initialize capturing',video_name)
         exit()
     len_frame=len(videocapture)
     frame_num=0
@@ -175,9 +175,9 @@ if __name__ =='__main__':
     video_list=video_list[s_:e_]
 
     len_videos=min(e_-s_,13320-s_) # if we choose the ucf101
-    print 'find {} videos.'.format(len_videos)
+    print('find {} videos.'.format(len_videos))
     flows_dirs=[video.split('.')[0] for video in video_list]
-    print 'get videos list done! '
+    print('get videos list done! ')
 
     pool=Pool(num_workers)
     if mode=='run':
