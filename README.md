@@ -15,9 +15,10 @@ This is a python port of denseflow, which extract the videos' frames and **optic
 
 ## Installation
 #### Install the requirements:
-```
+```sh
 pip install -r requirements.txt
-
+# or
+conda create -n py-denseflow python=3.6 anaconda numpy opencv multiprocess scipy sk-video
 ```
 
 ---
