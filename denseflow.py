@@ -39,19 +39,16 @@ def save_flows(flows, image, save_dir, num, bound):
     # rescale to 0~255 with the bound setting
     flow_x = ToImg(flows[..., 0], bound)
     flow_y = ToImg(flows[..., 1], bound)
-    if not os.path.exists(os.path.join(data_root, new_dir, save_dir)):
-        os.makedirs(os.path.join(data_root, new_dir, save_dir))
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
     # save the image
-    save_img = os.path.join(data_root, new_dir, save_dir,
-                            'img_{:05d}.jpg'.format(num))
+    save_img = os.path.join(save_dir, 'img_{:05d}.jpg'.format(num))
     scipy.misc.imsave(save_img, image)
 
     # save the flows
-    save_x = os.path.join(data_root, new_dir, save_dir,
-                          'flow_x_{:05d}.jpg'.format(num))
-    save_y = os.path.join(data_root, new_dir, save_dir,
-                          'flow_y_{:05d}.jpg'.format(num))
+    save_x = os.path.join(save_dir, 'flow_x_{:05d}.jpg'.format(num))
+    save_y = os.path.join(save_dir, 'flow_y_{:05d}.jpg'.format(num))
     flow_x_img = Image.fromarray(flow_x)
     flow_y_img = Image.fromarray(flow_y)
     scipy.misc.imsave(save_x, flow_x_img)
@@ -150,7 +147,7 @@ def parse_args():
     parser.add_argument('--dataset', default='ucf101', type=str,
                         help='set the dataset name, to find the data path')
     parser.add_argument(
-        '--data_root', default='/home/ping501b/data/UCF101/', type=str)
+        '--data_root', default='/home/ping501b/data/UCF101/UCF-101/', type=str)
     parser.add_argument('--new_dir', default='flows', type=str)
     parser.add_argument('--num_workers', default=4, type=int,
                         help='num of workers to act multi-process')
@@ -161,20 +158,16 @@ def parse_args():
     parser.add_argument('--e_', default=13320, type=int, help='end id')
     parser.add_argument('--mode', default='run', type=str,
                         help='set \'run\' if debug done, otherwise, set debug')
+    parser.add_argument('-o', required=True, type=str, help='out dir')
     args = parser.parse_args()
     return args
 
 
 if __name__ == '__main__':
 
-    # example: if the data path not setted from args,just manually set them as belows.
-    # dataset='ucf101'
-    # data_root='/S2/MI/zqj/video_classification/data'
-    # data_root=os.path.join(data_root,dataset)
-
     args = parse_args()
-    data_root = os.path.join(args.data_root, args.dataset)
-    videos_root = os.path.join(data_root, 'videos')
+    data_root = args.data_root
+    videos_root = data_root
 
     # specify the augments
     num_workers = args.num_workers
@@ -190,7 +183,7 @@ if __name__ == '__main__':
 
     len_videos = min(e_-s_, 13320-s_)  # if we choose the ucf101
     print('find {} videos.'.format(len_videos))
-    flows_dirs = [video.split('.')[0] for video in video_list]
+    flows_dirs = [os.path.join(args.o, new_dir, video.split('.')[0]) for video in video_list]
     print('get videos list done! ')
 
     pool = Pool(num_workers)
